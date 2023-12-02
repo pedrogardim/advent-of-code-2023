@@ -18,7 +18,8 @@ func main() {
 	str := string(data)
 	arr := strings.Split(str, "\n")
 
-	res := possibleGamesWithinLimit(arr)
+	// res := possibleGamesWithinLimit(arr)
+	res := leastCubesPossible(arr)
 
 	fmt.Println(res)
 }
@@ -55,6 +56,42 @@ func possibleGamesWithinLimit(lines []string) int {
 	}
 
 	return possibleGamesIdSum
+}
+
+func leastCubesPossible(lines []string) int {
+	leastCubesPowerSum := 0
+
+	for _, gameString := range lines {
+		maxCubeEntry := map[string]int{
+			"red":   0,
+			"green": 0,
+			"blue":  0,
+		}
+		gameString = strings.Split(gameString, ":")[1]
+		roundStringArr := strings.Split(gameString, ";")
+		for _, round := range roundStringArr {
+			for _, comb := range strings.Split(round, ",") {
+				splitComb := strings.Split(comb, " ")
+				amount, err := strconv.Atoi(splitComb[1])
+				color := splitComb[2]
+				check(err)
+				fmt.Println(amount, color)
+				if maxCubeEntry[color] < amount {
+					maxCubeEntry[color] = amount
+				}
+			}
+		}
+
+		power := 1
+
+		for _, value := range maxCubeEntry {
+			power *= value
+		}
+
+		leastCubesPowerSum += power
+	}
+
+	return leastCubesPowerSum
 }
 
 func check(e error) {
